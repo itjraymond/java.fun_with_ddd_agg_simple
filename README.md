@@ -5,14 +5,14 @@ Simple demo showing how to save an Aggregate Root (simple one) to Postgres witho
 # Aggregate Root
 
 We will choose a CustomerPortfolio Aggregate Root which will be composed of a Customer entity, a
-Portfolio entity and an Address Value Object.  
+Portfolio entity, composed of Asset Value Object, and an Address Value Object.  
 
 # Postgres
 
 Postgres will have three tables:
 
 1. Customer
-2. Portfolio
+2. Portfolio - [Asset]
 3. Address
 
 # Objective
