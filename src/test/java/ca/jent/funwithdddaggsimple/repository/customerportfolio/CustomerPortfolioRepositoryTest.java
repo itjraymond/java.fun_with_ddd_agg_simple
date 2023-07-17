@@ -18,7 +18,10 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import java.time.LocalDate;
 import java.time.Month;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import static java.util.stream.Collectors.toSet;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJdbcTest
@@ -42,5 +45,19 @@ class CustomerPortfolioRepositoryTest {
         CustomerPortfolio savedCustPortfolio = customerPortfolioRepository.save(jackPortfolio);
 
         assertNotNull(savedCustPortfolio.id());
+
+        Stream<Asset> assets = Stream.concat(savedCustPortfolio.portfolio().assets().stream(), Set.of(new Asset(AssetType.REAL_ESTATE, Money.of(120000.21))).stream());
+        CustomerPortfolio newCustPort = new CustomerPortfolio(savedCustPortfolio.id(), savedCustPortfolio.customer(), new Portfolio(savedCustPortfolio.portfolio().id(), savedCustPortfolio.portfolio().name(), assets.collect(toSet())), savedCustPortfolio.address());
+
+
+        CustomerPortfolio save2 = customerPortfolioRepository.save(newCustPort);
+
+        assertEquals(3, save2.portfolio().assets().size());
+
+        assertEquals(savedCustPortfolio.id(), save2.id());
+        assertEquals(savedCustPortfolio.portfolio().id(), save2.portfolio().id());
+        assertEquals(savedCustPortfolio.address().street(), save2.address().street());
+
+        save2.portfolio().assets().forEach(System.out::println);
     }
 }
